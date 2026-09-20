@@ -13,7 +13,7 @@ c) **_LIFO_**
     - Un ejemplo de la vida real podria darse tranquilamente dentro de la cocina de un restaurante, siendo el ejemplo la pila de platos que aparece al momento de lavar los mismos. Por que? Bueno, cuando se van apliando los platos sucios, se van encimando uno arriba del otro, y al momento de lavarlos, se empieza por el tope (ultimo en agregar en la cima de la pila), -no comenzas por el ultimo... En la mayoria de los casos-.
     - Pasado a una aplicacion movil, un ejemplo podria ser la manera en la que se estrcutura la navegacion por las diferentes pantallas de la aplicacion. O sea, cuando uno va navegando por la aplicacion, lo que hacen las mayorias de aplicaciones es apilar las pestanias, y cuando uno le da al boton para retroceder, la ultima pantalla (tope) desaparece y queda la anterior.
 
-    **_FIFO_**
+  **_FIFO_**
 
     - Un ejemplo conocido es la fila de supermercado de toda la vida, siendo que el primero en la fila sera, por obvias razones, el primero en salir... -Tambien en la mayoria de casos.-
     - En una aplicacion movil (o web) esta estructura se utiliza mucho para el manejo de encolamiento de procesos. Esto porque los mismos se manejan de tal forma que la primera peticion o solicitud, por poner un ejemplo, a la base de datos, deberia ser la primera en terminar y darle una respuesta al usuario.
@@ -120,7 +120,7 @@ a) El uso de # dentro de la declaracion de atributos en una clase sirve especifi
 
 b) El problema que presenta .shift() al momento de implementarse en arreglos de gran tamanio radica en su comportamiento: .shift() quita y retorna el primer elemento del arreglo, y _disminuye (corre) el indice de todos los elementos posteriores_ para que se adapten a la nueva cantidad de elementos. Esto genera problemas de rendimiento y lentitud de respuesta. Las colas "serias" resuelven esto de dos formas conocidas, pero la mas normal sin dejar de lado los arreglos (porque si, una de las formas es no usar arreglos en lo absoluto) es no usar shift() y utilizar un algoritmo que modifica simplemente el indice del inicio y el de salida, sin cambiar los indices de todos los elementos presentes en el mismo.
 
-c) El metodo utilizado por la pila para sacar elementos es el .pop(), y el de la cola es el .shift(). El hecho de que no puedan "intercambiar" de metodos es justamente por el comportamiento de cada uno, ya que el pop() quita y retorna el ultimo elemento del arreglo, mientras que shift() quita y retorna el primero mientras reindexa todo el arreglo, es decir, uno cumple especificamente cin la estructura LIFO y otro con la LIFO.
+c) El metodo utilizado por la pila para sacar elementos es el .pop(), y el de la cola es el .shift(). El hecho de que no puedan "intercambiar" de metodos es justamente por el comportamiento de cada uno, ya que el pop() quita y retorna el ultimo elemento del arreglo, mientras que shift() quita y retorna el primero mientras reindexa todo el arreglo, es decir, uno cumple especificamente cin la estructura LIFO y otro con la FIFO.
 
 ---
 
@@ -138,53 +138,60 @@ class ColaEficiente {
 
   constructor(capacidadMaxima) {
     // Arreglo con un tamanio fijo desde el principio
-    this.elementos = new Array(capacidadMaxima);
-    this.capacidad = capacidadMaxima;
+    this.#elementos = new Array(capacidadMaxima);
+    this.#capacidad = capacidadMaxima;
 
-    this.head = 0; // Elemento actual
-    this.tail = 0; // Elemento siguiente
-    this.cantidad = 0; // Cantidad de elementos en la cola
+    this.#head = 0; // Elemento actual
+    this.#tail = 0; // Elemento siguiente
+    this.#cantidad = 0; // Cantidad de elementos en la cola
+  }
+
+  frente() {
+    if (this.#cantidad === 0) {
+      return undefined;
+    }
+    return this.#elementos[this.#head];
   }
 
   encolar(item) {
     // Verificacion de que la cola tenga lugar
-    if (this.cantidad === this.capacidad) {
+    if (this.#cantidad === this.#capacidad) {
       console.log("La sala de espera está llena");
       return;
     }
 
     // El proceso a encolar se ubica donde indica tail.
-    this.elementos[this.tail] = item;
+    this.#elementos[this.#tail] = item;
 
     // Tail se mueve un lugar, en caso de que ya haya llegado al maximo, regresa a 0
-    this.tail = (this.tail + 1) % this.capacidad;
+    this.#tail = (this.#tail + 1) % this.#capacidad;
 
-    this.cantidad++;
+    this.#cantidad++;
   }
 
   desencolar() {
     // Verificacion de que la cola no este vacia
-    if (this.cantidad === 0) {
+    if (this.#cantidad === 0) {
       return undefined;
     }
 
     // Se guarda el proceso a desencolar
-    const item = this.elementos[this.head];
-    this.elementos[this.head] = null; // Se "vacia" ese lugar
+    const item = this.#elementos[this.#head];
+    this.#elementos[this.#head] = null; // Se "vacia" ese lugar
 
     // Se corre un puesto el lugar actual, tiene el mismo funcionamiento que tail, si llega al final se reinicia.
-    this.head = (this.head + 1) % this.capacidad;
+    this.#head = (this.#head + 1) % this.#capacidad;
 
-    this.cantidad--;
+    this.#cantidad--;
     return item; // Se retorna el elemento/proceso
   }
 
   get vacia() {
-    return this.cantidad === 0;
+    return this.#cantidad === 0;
   }
 
   get tamanio() {
-    return this.cantidad;
+    return this.#cantidad;
   }
 }
 ```
