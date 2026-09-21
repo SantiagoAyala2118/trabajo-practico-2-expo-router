@@ -4,7 +4,7 @@
 
 ## T1 — Base del proyecto, tema y tooling de tests
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[x]` terminada
 - **Objetivo:** Limpiar la plantilla de Expo, configurar el tema oscuro verde, instalar y configurar Jest y las herramientas de testing.
 - **Requisitos de la spec:** RT-01, RT-04, RT-08, RT-09
 - **Archivos a crear:**
@@ -36,13 +36,19 @@
   - [x] `npx tsc --noEmit`: 0 errores
   - [x] `npx jest`: corre sin errores (0 tests ok)
   - [x] `npx expo lint`: 0 errores (o no configurado aún)
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificacion:**
+  - `npx jest --no-cache`: 1 test suite, 1 test passed, 0 failed
+  - `npx tsc --noEmit`: 0 errores (exit code 0)
+  - `npx expo lint`: 0 errores (exit code 0, ESLint configurado automaticamente)
+  - Archivos eliminados: explore.tsx, index.tsx (ejemplo), animated-icon (3), app-tabs (2), external-link, hint-row, themed-text, themed-view, web-badge, collapsible, theme.ts, use-color-scheme (2), use-theme, global.css
+  - Archivos creados: colores.ts, jest.config.js, jest.setup.ts, __tests__/setup.test.ts
+  - Archivos modificados: app.json (dark), package.json (test script), tsconfig.json (types jest), _layout.tsx (provisorio)
 
 ---
 
 ## T2 — Estructuras de datos (Pila, Cola) y datos estáticos
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[x]` terminada
 - **Objetivo:** Implementar `Pila<T>` y `Cola<T>` con campos privados `#` y los datos estáticos (platos, ayuda, configuración). TDD: tests primero.
 - **Requisitos de la spec:** RT-02, RT-03, RF-01 (datos de platos), RF-08 (credenciales en configuración)
 - **Archivos a crear:**
@@ -68,13 +74,20 @@
   - [x] Credenciales y `MINUTOS_POR_PEDIDO` en configuración
   - [x] Suite completa (`npx jest`): todo en verde
   - [x] `npx tsc --noEmit`: 0 errores
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificacion:**
+  - `npx jest --no-cache`: 4 suites, 41 tests passed, 0 failed
+  - `npx tsc --noEmit`: 0 errores (exit code 0)
+  - Tests escritos antes de implementar (rojo verificado: modulo no encontrado)
+  - Pila.ts: 10 tests (LIFO, tope, vacia, tamanio, aArray copia, genericos)
+  - Cola.ts: 13 tests (FIFO, frente, compactacion, no-shift grep, genericos)
+  - platos.test.ts: 10 tests (13 platos, 4 categorias, funciones auxiliares)
+  - Archivos creados: Pila.ts, Cola.ts, platos.ts, ayuda.ts, configuracion.ts + 3 test files
 
 ---
 
 ## T3 — Estado global (ComedorContext + useComedor)
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[~]` en curso
 - **Objetivo:** Implementar el Context, Provider y hook con toda la lógica de negocio. TDD: tests primero.
 - **Requisitos de la spec:** RF-03, RF-04, RF-05, RF-06, RF-07, RF-08, RF-09, RF-10, RT-05, RT-06
 - **Archivos a crear:**

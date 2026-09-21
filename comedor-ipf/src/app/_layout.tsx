@@ -1,18 +1,20 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+// Layout raiz provisorio - se reemplaza completamente en T5
+// STUB(T5): Stack raiz con GestureHandlerRootView, Provider, guards y anchor
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { colores } from '@/tema/colores';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
-
-SplashScreen.preventAutoHideAsync();
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function LayoutRaiz() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <>
+      <StatusBar style="light" />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: colores.fondo },
+          headerTintColor: colores.textoClaro,
+          contentStyle: { backgroundColor: colores.fondo },
+        }}
+      />
+    </>
   );
 }
