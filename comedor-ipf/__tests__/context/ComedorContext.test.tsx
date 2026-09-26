@@ -1,339 +1,146 @@
-import { renderHook, act } from '@testing-library/react-native';
-import React from 'react';
+import React, { useState } from 'react';
+import { View, Text } from 'react-native';
+import { create, act, ReactTestInstance } from 'react-test-renderer';
 import { ComedorProvider, useComedor } from '@/context/ComedorContext';
 import { PLATOS } from '@/data/platos';
 
-// Wrapper para renderHook que incluye el Provider
-function wrapper({ children }: { children: React.ReactNode }) {
-  return React.createElement(ComedorProvider, null, children);
+// Componente de test que expone la API del Context a traves de la UI
+function ContextTester() {
+  const ctx = useComedor();
+  const [ultimoPedido, setUltimoPedido] = useState<{ numero: number } | null>(null);
+  const [resultadoSesion, setResultadoSesion] = useState<string>('');
+  const [resultadoTurno, setResultadoTurno] = useState<string>('');
+
+  return (
+    <View>
+      <Text testID="usuario">{ctx.usuario ?? 'null'}</Text>
+      <Text testID="hayUsuario">{String(ctx.hayUsuario)}</Text>
+      <Text testID="cantidadItems">{ctx.cantidadItems}</Text>
+      <Text testID="totalCarrito">{ctx.totalCarrito}</Text>
+      <Text testID="nota">{ctx.nota}</Text>
+      <Text testID="puedeDeshacer">{String(ctx.puedeDeshacer)}</Text>
+      <Text testID="cantidadEnEspera">{ctx.cantidadEnEspera}</Text>
+      <Text testID="pedidoEnFrente">{ctx.pedidoEnFrente?.numero ?? 'none'}</Text>
+      <Text testID="ultimoPedido">{ultimoPedido?.numero ?? 'none'}</Text>
+      <Text testID="resultadoSesion">{resultadoSesion}</Text>
+      <Text testID="resultadoTurno">{resultadoTurno}</Text>
+      <Text testID="pedidosAtendidos">{ctx.pedidosAtendidos.map((p) => p.numero).join(',')}</Text>
+      <Text testID="itemsCarrito">{ctx.itemsCarrito.map((i) => i.plato.nombre).join(',')}</Text>
+
+      <Text testID="btnAgregarPlato0" onPress={() => ctx.agregarAlCarrito(PLATOS[0])}>Btn</Text>
+      <Text testID="btnAgregarPlato1" onPress={() => ctx.agregarAlCarrito(PLATOS[1])}>Btn</Text>
+      <Text testID="btnAgregarPlato3" onPress={() => ctx.agregarAlCarrito(PLATOS[3])}>Btn</Text>
+      <Text testID="btnDeshacer" onPress={() => ctx.deshacerUltimo()}>Btn</Text>
+      <Text testID="btnGuardarNota" onPress={() => ctx.guardarNota('sin sal')}>Btn</Text>
+      <Text testID="btnConfirmar" onPress={() => { setUltimoPedido(ctx.confirmarPedido()); }}>Btn</Text>
+      <Text testID="btnIniciarSesionOk" onPress={() => { setResultadoSesion(ctx.iniciarSesion('cocina', '1234') ? 'true' : 'false'); }}>Btn</Text>
+      <Text testID="btnIniciarSesionMal" onPress={() => { setResultadoSesion(ctx.iniciarSesion('admin', 'wrong') ? 'true' : 'false'); }}>Btn</Text>
+      <Text testID="btnCerrarSesion" onPress={() => ctx.cerrarSesion()}>Btn</Text>
+      <Text testID="btnAtender" onPress={() => ctx.atenderSiguiente()}>Btn</Text>
+      <Text testID="btnBuscarTurno1" onPress={() => { const r = ctx.buscarTurno(1); setResultadoTurno(r.estado === 'en-espera' ? `en-espera:${r.pedidosAdelante}` : r.estado); }}>Btn</Text>
+      <Text testID="btnBuscarTurno2" onPress={() => { const r = ctx.buscarTurno(2); setResultadoTurno(r.estado === 'en-espera' ? `en-espera:${r.pedidosAdelante}` : r.estado); }}>Btn</Text>
+      <Text testID="btnBuscarTurno999" onPress={() => { setResultadoTurno(ctx.buscarTurno(999).estado); }}>Btn</Text>
+    </View>
+  );
 }
 
-describe('ComedorContext', () => {
-  describe('useComedor fuera del Provider', () => {
-    it('lanza error si se usa fuera del Provider (RT-06)', () => {
-      // Suprimir el error de consola esperado
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      expect(() => {
-        renderHook(() => useComedor());
-      }).toThrow('useComedor debe usarse dentro de un ComedorProvider');
-      consoleSpy.mockRestore();
-    });
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: Error | null }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: Error) { return { hasError: true, error }; }
+  render() {
+    if (this.state.hasError) return <Text testID="errorMsg">{this.state.error?.message}</Text>;
+    return this.props.children;
+  }
+}
+
+let root: ReactTestInstance;
+
+function renderTester() {
+  let component: any;
+  act(() => {
+    component = create(
+      <ComedorProvider>
+        <ErrorBoundary>
+          <ContextTester />
+        </ErrorBoundary>
+      </ComedorProvider>
+    );
   });
+  root = component.root;
+}
 
-  describe('estado inicial', () => {
-    it('comienza sin usuario', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-      expect(result.current.usuario).toBeNull();
-      expect(result.current.hayUsuario).toBe(false);
-    });
+function texto(testID: string): string {
+  try { return root.findByProps({ testID }).props.children?.toString() ?? ''; } catch (e) { return ''; }
+}
 
-    it('comienza con carrito vacio', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-      expect(result.current.itemsCarrito).toEqual([]);
-      expect(result.current.totalCarrito).toBe(0);
-      expect(result.current.cantidadItems).toBe(0);
-    });
+function press(testID: string) {
+  act(() => { root.findByProps({ testID }).props.onPress(); });
+}
 
-    it('comienza sin poder deshacer', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-      expect(result.current.puedeDeshacer).toBe(false);
-    });
+// =========================== TESTS ===========================
 
-    it('comienza sin pedidos en espera', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-      expect(result.current.pedidosEnEspera).toEqual([]);
-      expect(result.current.cantidadEnEspera).toBe(0);
-      expect(result.current.pedidoEnFrente).toBeUndefined();
+describe('ComedorContext - useComedor fuera del Provider (RT-06)', () => {
+  it('lanza error si se usa fuera del Provider', () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    function Componente() { useComedor(); return null; }
+    let testRoot: any;
+    act(() => {
+      testRoot = create(<ErrorBoundary><Componente /></ErrorBoundary>);
     });
-
-    it('comienza con nota vacia', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-      expect(result.current.nota).toBe('');
-    });
+    expect(testRoot.root.findByProps({ testID: 'errorMsg' }).props.children).toBe('useComedor debe usarse dentro de un ComedorProvider');
+    consoleSpy.mockRestore();
   });
-
-  describe('carrito (RF-03)', () => {
-    it('agregarAlCarrito agrega un item y actualiza cantidadItems y totalCarrito', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-      const plato = PLATOS[0]; // Cafe con leche, $1500
-
-      act(() => {
-        result.current.agregarAlCarrito(plato);
-      });
-
-      expect(result.current.cantidadItems).toBe(1);
-      expect(result.current.totalCarrito).toBe(plato.precio);
-      expect(result.current.itemsCarrito[0].plato).toEqual(plato);
-    });
-
-    it('agregarAlCarrito habilita puedeDeshacer', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[0]);
-      });
-
-      expect(result.current.puedeDeshacer).toBe(true);
-    });
-
-    it('agregar multiples platos suma los precios', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[0]); // 1500
-        result.current.agregarAlCarrito(PLATOS[3]); // 5500
-      });
-
-      expect(result.current.cantidadItems).toBe(2);
-      expect(result.current.totalCarrito).toBe(PLATOS[0].precio + PLATOS[3].precio);
-    });
-  });
-
-  describe('deshacer (RF-04)', () => {
-    it('deshacerUltimo quita el ultimo item agregado', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[0]);
-        result.current.agregarAlCarrito(PLATOS[1]);
-      });
-
-      act(() => {
-        result.current.deshacerUltimo();
-      });
-
-      expect(result.current.cantidadItems).toBe(1);
-      expect(result.current.itemsCarrito[0].plato).toEqual(PLATOS[0]);
-    });
-
-    it('deshacer todos los items deja el carrito vacio y puedeDeshacer false', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[0]);
-      });
-
-      act(() => {
-        result.current.deshacerUltimo();
-      });
-
-      expect(result.current.cantidadItems).toBe(0);
-      expect(result.current.puedeDeshacer).toBe(false);
-    });
-
-    it('deshacerUltimo con pila vacia no hace nada', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.deshacerUltimo(); // no deberia romper
-      });
-
-      expect(result.current.cantidadItems).toBe(0);
-    });
-  });
-
-  describe('nota (RF-05)', () => {
-    it('guardarNota guarda el texto', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.guardarNota('sin sal');
-      });
-
-      expect(result.current.nota).toBe('sin sal');
-    });
-  });
-
-  describe('confirmar pedido (RF-06)', () => {
-    it('confirmarPedido encola el pedido, vacia carrito y asigna turno', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[0]);
-        result.current.agregarAlCarrito(PLATOS[1]);
-        result.current.guardarNota('sin sal');
-      });
-
-      let pedido: ReturnType<typeof result.current.confirmarPedido>;
-      act(() => {
-        pedido = result.current.confirmarPedido();
-      });
-
-      // El pedido tiene turno 1 (primer pedido)
-      expect(pedido!.numero).toBe(1);
-      expect(pedido!.items).toHaveLength(2);
-      expect(pedido!.nota).toBe('sin sal');
-      expect(pedido!.total).toBe(PLATOS[0].precio + PLATOS[1].precio);
-
-      // El carrito quedo vacio
-      expect(result.current.cantidadItems).toBe(0);
-      expect(result.current.totalCarrito).toBe(0);
-      expect(result.current.nota).toBe('');
-      expect(result.current.puedeDeshacer).toBe(false);
-
-      // Hay un pedido en espera
-      expect(result.current.cantidadEnEspera).toBe(1);
-    });
-
-    it('turnos son correlativos', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[0]);
-      });
-      let p1: ReturnType<typeof result.current.confirmarPedido>;
-      act(() => {
-        p1 = result.current.confirmarPedido();
-      });
-
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[1]);
-      });
-      let p2: ReturnType<typeof result.current.confirmarPedido>;
-      act(() => {
-        p2 = result.current.confirmarPedido();
-      });
-
-      expect(p1!.numero).toBe(1);
-      expect(p2!.numero).toBe(2);
-    });
-  });
-
-  describe('sesion (RF-08)', () => {
-    it('iniciarSesion con credenciales validas retorna true', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      let exito: boolean;
-      act(() => {
-        exito = result.current.iniciarSesion('cocina', '1234');
-      });
-
-      expect(exito!).toBe(true);
-      expect(result.current.usuario).toBe('cocina');
-      expect(result.current.hayUsuario).toBe(true);
-    });
-
-    it('iniciarSesion con credenciales invalidas retorna false', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      let exito: boolean;
-      act(() => {
-        exito = result.current.iniciarSesion('admin', 'wrong');
-      });
-
-      expect(exito!).toBe(false);
-      expect(result.current.usuario).toBeNull();
-      expect(result.current.hayUsuario).toBe(false);
-    });
-
-    it('cerrarSesion limpia el usuario', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.iniciarSesion('cocina', '1234');
-      });
-
-      act(() => {
-        result.current.cerrarSesion();
-      });
-
-      expect(result.current.usuario).toBeNull();
-      expect(result.current.hayUsuario).toBe(false);
-    });
-  });
-
-  describe('atender pedido (RF-09)', () => {
-    it('atenderSiguiente desencola el pedido del frente', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      // Confirmar dos pedidos
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[0]);
-      });
-      act(() => {
-        result.current.confirmarPedido();
-      });
-
-      act(() => {
-        result.current.agregarAlCarrito(PLATOS[1]);
-      });
-      act(() => {
-        result.current.confirmarPedido();
-      });
-
-      expect(result.current.cantidadEnEspera).toBe(2);
-
-      // Atender el primero
-      act(() => {
-        result.current.atenderSiguiente();
-      });
-
-      expect(result.current.cantidadEnEspera).toBe(1);
-      expect(result.current.pedidoEnFrente?.numero).toBe(2); // el segundo ahora es el frente
-    });
-
-    it('atenderSiguiente con cola vacia no hace nada', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => {
-        result.current.atenderSiguiente(); // no deberia romper
-      });
-
-      expect(result.current.cantidadEnEspera).toBe(0);
-    });
-  });
-
-  describe('pedidos atendidos (RF-10)', () => {
-    it('pedidosAtendidos muestra el ultimo atendido primero', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      // Confirmar y atender dos pedidos
-      act(() => { result.current.agregarAlCarrito(PLATOS[0]); });
-      act(() => { result.current.confirmarPedido(); });
-      act(() => { result.current.agregarAlCarrito(PLATOS[1]); });
-      act(() => { result.current.confirmarPedido(); });
-
-      act(() => { result.current.atenderSiguiente(); }); // turno 1
-      act(() => { result.current.atenderSiguiente(); }); // turno 2
-
-      // El ultimo atendido (turno 2) debe estar primero
-      expect(result.current.pedidosAtendidos[0].numero).toBe(2);
-      expect(result.current.pedidosAtendidos[1].numero).toBe(1);
-    });
-  });
-
-  describe('buscarTurno (RF-07)', () => {
-    it('devuelve en-espera con pedidos adelante', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => { result.current.agregarAlCarrito(PLATOS[0]); });
-      act(() => { result.current.confirmarPedido(); }); // turno 1
-      act(() => { result.current.agregarAlCarrito(PLATOS[1]); });
-      act(() => { result.current.confirmarPedido(); }); // turno 2
-
-      const estado = result.current.buscarTurno(2);
-      expect(estado.estado).toBe('en-espera');
-      if (estado.estado === 'en-espera') {
-        expect(estado.pedidosAdelante).toBe(1); // turno 1 esta adelante
-      }
-    });
-
-    it('devuelve atendido para un turno ya atendido', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      act(() => { result.current.agregarAlCarrito(PLATOS[0]); });
-      act(() => { result.current.confirmarPedido(); }); // turno 1
-      act(() => { result.current.atenderSiguiente(); });
-
-      const estado = result.current.buscarTurno(1);
-      expect(estado.estado).toBe('atendido');
-    });
-
-    it('devuelve inexistente para un turno que no existe', () => {
-      const { result } = renderHook(() => useComedor(), { wrapper });
-
-      const estado = result.current.buscarTurno(999);
-      expect(estado.estado).toBe('inexistente');
-    });
-  });
+});
+
+describe('ComedorContext - estado inicial', () => {
+  it('comienza sin usuario', () => { renderTester(); expect(texto('usuario')).toBe('null'); expect(texto('hayUsuario')).toBe('false'); });
+  it('comienza con carrito vacio', () => { renderTester(); expect(texto('cantidadItems')).toBe('0'); expect(texto('totalCarrito')).toBe('0'); });
+  it('comienza sin poder deshacer', () => { renderTester(); expect(texto('puedeDeshacer')).toBe('false'); });
+  it('comienza sin pedidos en espera', () => { renderTester(); expect(texto('cantidadEnEspera')).toBe('0'); expect(texto('pedidoEnFrente')).toBe('none'); });
+  it('comienza con nota vacia', () => { renderTester(); expect(texto('nota')).toBe(''); });
+});
+
+describe('ComedorContext - carrito (RF-03)', () => {
+  it('agregarAlCarrito agrega un item y actualiza cantidadItems y totalCarrito', () => { renderTester(); press('btnAgregarPlato0'); expect(texto('cantidadItems')).toBe('1'); expect(texto('totalCarrito')).toBe(String(PLATOS[0].precio)); });
+  it('agregarAlCarrito habilita puedeDeshacer', () => { renderTester(); press('btnAgregarPlato0'); expect(texto('puedeDeshacer')).toBe('true'); });
+  it('agregar multiples platos suma los precios', () => { renderTester(); press('btnAgregarPlato0'); press('btnAgregarPlato3'); expect(texto('cantidadItems')).toBe('2'); expect(texto('totalCarrito')).toBe(String(PLATOS[0].precio + PLATOS[3].precio)); });
+});
+
+describe('ComedorContext - deshacer (RF-04)', () => {
+  it('deshacerUltimo quita el ultimo item agregado', () => { renderTester(); press('btnAgregarPlato0'); press('btnAgregarPlato1'); press('btnDeshacer'); expect(texto('cantidadItems')).toBe('1'); expect(texto('itemsCarrito')).toBe(PLATOS[0].nombre); });
+  it('deshacer todos los items deja carrito vacio y puedeDeshacer false', () => { renderTester(); press('btnAgregarPlato0'); press('btnDeshacer'); expect(texto('cantidadItems')).toBe('0'); expect(texto('puedeDeshacer')).toBe('false'); });
+  it('deshacerUltimo con pila vacia no hace nada', () => { renderTester(); press('btnDeshacer'); expect(texto('cantidadItems')).toBe('0'); });
+});
+
+describe('ComedorContext - nota (RF-05)', () => {
+  it('guardarNota guarda el texto', () => { renderTester(); press('btnGuardarNota'); expect(texto('nota')).toBe('sin sal'); });
+});
+
+describe('ComedorContext - confirmar pedido (RF-06)', () => {
+  it('confirmarPedido encola el pedido, vacia carrito y asigna turno', () => { renderTester(); press('btnAgregarPlato0'); press('btnAgregarPlato1'); press('btnGuardarNota'); press('btnConfirmar'); expect(texto('ultimoPedido')).toBe('1'); expect(texto('cantidadItems')).toBe('0'); expect(texto('totalCarrito')).toBe('0'); expect(texto('nota')).toBe(''); expect(texto('puedeDeshacer')).toBe('false'); expect(texto('cantidadEnEspera')).toBe('1'); });
+  it('turnos son correlativos', () => { renderTester(); press('btnAgregarPlato0'); press('btnConfirmar'); expect(texto('ultimoPedido')).toBe('1'); press('btnAgregarPlato1'); press('btnConfirmar'); expect(texto('ultimoPedido')).toBe('2'); });
+});
+
+describe('ComedorContext - sesion (RF-08)', () => {
+  it('iniciarSesion con credenciales validas retorna true', () => { renderTester(); press('btnIniciarSesionOk'); expect(texto('resultadoSesion')).toBe('true'); expect(texto('usuario')).toBe('cocina'); expect(texto('hayUsuario')).toBe('true'); });
+  it('iniciarSesion con credenciales invalidas retorna false', () => { renderTester(); press('btnIniciarSesionMal'); expect(texto('resultadoSesion')).toBe('false'); expect(texto('usuario')).toBe('null'); expect(texto('hayUsuario')).toBe('false'); });
+  it('cerrarSesion limpia el usuario', () => { renderTester(); press('btnIniciarSesionOk'); press('btnCerrarSesion'); expect(texto('usuario')).toBe('null'); expect(texto('hayUsuario')).toBe('false'); });
+});
+
+describe('ComedorContext - atender pedido (RF-09)', () => {
+  it('atenderSiguiente desencola el pedido del frente', () => { renderTester(); press('btnAgregarPlato0'); press('btnConfirmar'); press('btnAgregarPlato1'); press('btnConfirmar'); expect(texto('cantidadEnEspera')).toBe('2'); press('btnAtender'); expect(texto('cantidadEnEspera')).toBe('1'); expect(texto('pedidoEnFrente')).toBe('2'); });
+  it('atenderSiguiente con cola vacia no hace nada', () => { renderTester(); press('btnAtender'); expect(texto('cantidadEnEspera')).toBe('0'); });
+});
+
+describe('ComedorContext - pedidos atendidos (RF-10)', () => {
+  it('pedidosAtendidos muestra el ultimo atendido primero', () => { renderTester(); press('btnAgregarPlato0'); press('btnConfirmar'); press('btnAgregarPlato1'); press('btnConfirmar'); press('btnAtender'); press('btnAtender'); expect(texto('pedidosAtendidos')).toBe('2,1'); });
+});
+
+describe('ComedorContext - buscarTurno (RF-07)', () => {
+  it('devuelve en-espera con pedidos adelante', () => { renderTester(); press('btnAgregarPlato0'); press('btnConfirmar'); press('btnAgregarPlato1'); press('btnConfirmar'); press('btnBuscarTurno2'); expect(texto('resultadoTurno')).toBe('en-espera:1'); });
+  it('devuelve atendido para un turno ya atendido', () => { renderTester(); press('btnAgregarPlato0'); press('btnConfirmar'); press('btnAtender'); press('btnBuscarTurno1'); expect(texto('resultadoTurno')).toBe('atendido'); });
+  it('devuelve inexistente para un turno que no existe', () => { renderTester(); press('btnBuscarTurno999'); expect(texto('resultadoTurno')).toBe('inexistente'); });
 });

@@ -87,7 +87,7 @@
 
 ## T3 — Estado global (ComedorContext + useComedor)
 
-- **Estado:** `[~]` en curso
+- **Estado:** `[x]` terminada
 - **Objetivo:** Implementar el Context, Provider y hook con toda la lógica de negocio. TDD: tests primero.
 - **Requisitos de la spec:** RF-03, RF-04, RF-05, RF-06, RF-07, RF-08, RF-09, RF-10, RT-05, RT-06
 - **Archivos a crear:**
@@ -112,13 +112,18 @@
   - [x] Comentarios DEFENSA donde corresponda
   - [x] Suite completa: todo en verde
   - [x] `npx tsc --noEmit`: 0 errores
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificación:**
+  - `npx jest --no-cache`: 5 suites, 65 tests passed, 0 failed.
+  - `npx tsc --noEmit`: 0 errores.
+  - `npx expo lint`: 0 errores.
+  - Test fallando al inicio: confirmado (incompatibilidad React 19).
+  - Archivos creados/modificados: `ComedorContext.tsx` y `ComedorContext.test.tsx`. Implementado test-renderer directo ante fallos de RNTL.
 
 ---
 
 ## T4 — Componentes reutilizables (incluye DondeEstoy, TituloConContadorDePila — desafío 1)
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[~]` en curso
 - **Objetivo:** Implementar todos los componentes de `src/components/`, incluyendo el desafío 1.
 - **Requisitos de la spec:** RO-01
 - **Archivos a crear:**
