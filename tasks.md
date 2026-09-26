@@ -123,7 +123,7 @@
 
 ## T4 — Componentes reutilizables (incluye DondeEstoy, TituloConContadorDePila — desafío 1)
 
-- **Estado:** `[~]` en curso
+- **Estado:** `[x]` terminada
 - **Objetivo:** Implementar todos los componentes de `src/components/`, incluyendo el desafío 1.
 - **Requisitos de la spec:** RO-01
 - **Archivos a crear:**
@@ -153,13 +153,17 @@
   - [x] Tests de componentes pasan
   - [x] Suite completa: todo en verde
   - [x] `npx tsc --noEmit`: 0 errores
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificación:**
+  - `npx jest --no-cache`: 9 suites, 69 tests passed, 0 failed.
+  - `npx tsc --noEmit`: 0 errores.
+  - `npx expo lint`: 0 errores (se solucionaron missing display names).
+  - Tests renderizados con `react-test-renderer` puro + `act()`.
 
 ---
 
 ## T5 — Esqueleto de enrutamiento: layouts reales y pantallas provisorias
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[~]` en curso
 - **Objetivo:** Crear todos los layouts con la configuración real y todas las rutas de la tabla como pantallas provisorias (`// STUB(Tarea N)`).
 - **Requisitos de la spec:** RR-01 a RR-16 (estructura), RT-07, RT-08, RT-10
 - **Archivos a crear:**

@@ -27,6 +27,7 @@ export const TarjetaPedido = memo(({ pedido }: { pedido: Pedido }) => {
     </View>
   );
 });
+TarjetaPedido.displayName = 'TarjetaPedido';
 
 const styles = StyleSheet.create({
   tarjeta: {

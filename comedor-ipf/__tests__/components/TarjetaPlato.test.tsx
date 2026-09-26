@@ -1,12 +1,15 @@
 import React from 'react';
-import { create } from 'react-test-renderer';
+import { create, act } from 'react-test-renderer';
 import { TarjetaPlato } from '@/components/TarjetaPlato';
 import { PLATOS } from '@/data/platos';
 
 describe('TarjetaPlato', () => {
   it('renderiza props del plato', () => {
     const plato = PLATOS[0];
-    const component = create(<TarjetaPlato plato={plato} onPress={() => {}} />);
+    let component: any;
+    act(() => {
+      component = create(<TarjetaPlato plato={plato} onPress={() => {}} />);
+    });
     const root = component.root;
     
     const nombre = root.findByProps({ testID: 'tarjeta-plato-nombre' });

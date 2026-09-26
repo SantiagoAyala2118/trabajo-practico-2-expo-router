@@ -19,6 +19,7 @@ export const TarjetaPlato = memo(({ plato, onPress }: Props) => {
     </Pressable>
   );
 });
+TarjetaPlato.displayName = 'TarjetaPlato';
 
 const styles = StyleSheet.create({
   tarjeta: {

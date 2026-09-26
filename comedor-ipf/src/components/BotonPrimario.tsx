@@ -46,6 +46,7 @@ export const BotonPrimario = forwardRef<any, Props>(
     );
   }
 );
+BotonPrimario.displayName = 'BotonPrimario';
 
 const styles = StyleSheet.create({
   boton: {
