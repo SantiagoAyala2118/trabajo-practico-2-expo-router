@@ -1,4 +1,4 @@
-// STUB(T6): Pantalla de Inicio - se reemplaza con la implementacion real en T6
+
 import { View, Text, StyleSheet } from 'react-native';
 import { colores } from '@/tema/colores';
 

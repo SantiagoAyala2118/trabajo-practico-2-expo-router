@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router/js-tabs';
+import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useComedor } from '@/context/ComedorContext';
 import { colores } from '@/tema/colores';
@@ -35,6 +36,13 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="acceso-cocina"
+        listeners={{
+          tabPress: (e) => {
+            // Desafío 2: Evitar la navegación a la tab y pushear la ruta
+            e.preventDefault();
+            router.push('/cocina');
+          },
+        }}
         options={{
           title: 'Cocina',
           tabBarIcon: ({ color, size }) => <Ionicons name="lock-closed" size={size} color={color} />,

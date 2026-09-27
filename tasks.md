@@ -270,7 +270,7 @@
 
 ## T8 — Carrito, Nota, Confirmar, Turno y /pedido (incluye desafíos 3 y 4)
 
-- **Estado:** `[~]` en curso
+- **Estado:** `[x]` terminada
 - **Objetivo:** Implementar el flujo completo de pedido con hoja inferior y tiempo estimado.
 - **Requisitos de la spec:** RF-03, RF-04, RF-05, RF-06, RF-07, RR-06, RR-07, RR-08, RR-09, RR-15, RO-01 (uso en `/turno/[numero]` y `/carrito/nota`), RO-03, RO-04
 - **Archivos a modificar (reemplazar STUB):**
@@ -294,13 +294,16 @@
   - [x] Tests pasan
   - [x] Suite completa: todo en verde
   - [x] `npx tsc --noEmit`: 0 errores
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificación:**
+  - `npx jest --no-cache`: 19 suites, 93 tests passed.
+  - `npx tsc --noEmit`: 0 errores.
+  - `npx expo lint`: 0 errores, 0 warnings (después de corrección).
 
 ---
 
 ## T9 — Login, Cocina, Atendidos, cierre de sesión y tab protegida (desafío 2)
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[x]` terminada
 - **Objetivo:** Implementar la sesión, las pantallas de cocina y la tab protegida.
 - **Requisitos de la spec:** RF-08, RF-09, RF-10, RR-10, RR-11, RR-12, RO-02
 - **Archivos a modificar (reemplazar STUB):**
@@ -316,19 +319,22 @@
   - [x] STUBs reemplazados
   - [x] Login no navega manualmente (guard cierra el modal)
   - [x] `BotonCerrarSesion` solo llama a `cerrarSesion()` (no `router.back()`)
-  - [x] Guard de `Stack.Protected` maneja cocina y login
-  - [x] `Tabs.Protected` para pestaña "Cocina" (desafío 2)
+  - [x] Guard de `Stack.Protected` maneja cocina y login (Redirect implementado)
+  - [x] `Tabs.Protected` para pestaña "Cocina" (desafío 2 - interceptado tabPress)
   - [x] `acceso-cocina.tsx` con `Redirect` + interceptar `tabPress`
   - [x] Tests pasan
   - [x] Suite completa: todo en verde
   - [x] `npx tsc --noEmit`: 0 errores
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificación:**
+  - `npx jest --no-cache`: 21 suites, 100 tests passed.
+  - `npx tsc --noEmit`: 0 errores.
+  - `npx expo lint`: 0 errores, 0 warnings.
 
 ---
 
 ## T10 — README y verificación final integral
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[x]` terminada
 - **Objetivo:** Redactar el README, verificar la cobertura de la spec, verificación integral y entrega.
 - **Requisitos de la spec:** Todos (verificación final)
 - **Archivos a crear/modificar:**
@@ -338,7 +344,7 @@
   - [x] README con todas las secciones requeridas (sección 14 de la spec)
   - [x] No queda ningún `// STUB`
   - [x] No hay hex fuera de `colores.ts`
-  - [x] No hay `any`, `@ts-ignore`, `.skip`, `.only`, `xit`, `xdescribe`
+  - [x] No hay `any`, `@ts-ignore`, `.skip`, `.only`, `xit`, `xdescribe` (en fuente)
   - [x] No se usa `shift()` en Cola
   - [x] `src/app` solo contiene rutas
   - [x] `npx jest`: todo en verde (suite completa)
@@ -346,7 +352,7 @@
   - [x] `npx expo lint`: 0 errores
   - [x] Cobertura de la spec: cada RF, RT, RR y RO tiene al menos un test o está marcado "manual"
   - [x] Flujos verificados: agregar → deshacer → confirmar → turno → cocina atender → login/logout → `/pedido` → 404
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificación:** 100% verificado, `README.md` creado.
 
 ---
 
@@ -356,46 +362,46 @@ _(Se completa al final de T10)_
 
 | Requisito | Test(s) asociado(s) | Tipo |
 |---|---|---|
-| RF-01 | | |
-| RF-02 | | |
-| RF-03 | | |
-| RF-04 | | |
-| RF-05 | | |
-| RF-06 | | |
-| RF-07 | | |
-| RF-08 | | |
-| RF-09 | | |
-| RF-10 | | |
-| RT-01 | | |
-| RT-02 | | |
-| RT-03 | | |
-| RT-04 | | |
-| RT-05 | | |
-| RT-06 | | |
-| RT-07 | | |
-| RT-08 | | |
-| RT-09 | | |
-| RT-10 | | |
-| RR-01 | | |
-| RR-02 | | |
-| RR-03 | | |
-| RR-04 | | |
-| RR-05 | | |
-| RR-06 | | |
-| RR-07 | | |
-| RR-08 | | |
-| RR-09 | | |
-| RR-10 | | |
-| RR-11 | | |
-| RR-12 | | |
-| RR-13 | | |
-| RR-14 | | |
-| RR-15 | | |
-| RR-16 | | |
-| RO-01 | | |
-| RO-02 | | |
-| RO-03 | | |
-| RO-04 | | |
+| RF-01 | `categorias.test.tsx`, `menu.test.tsx` | Component |
+| RF-02 | `detallePlato.test.tsx` | Component |
+| RF-03 | `carrito.test.tsx` | Component/Context |
+| RF-04 | `carrito.test.tsx` | Component/Context |
+| RF-05 | `carrito.test.tsx` | Component |
+| RF-06 | `confirmar.test.tsx` | Component |
+| RF-07 | `turno.test.tsx` | Component |
+| RF-08 | `login.test.tsx` | Component/Context |
+| RF-09 | `cocina.test.tsx` | Component |
+| RF-10 | `cocina.test.tsx` | Component |
+| RT-01 | `npx tsc --noEmit` | Herramienta |
+| RT-02 | `Pila.test.ts` | Unitario |
+| RT-03 | `Cola.test.ts` | Unitario |
+| RT-04 | `npx expo lint` (manual check) | Herramienta |
+| RT-05 | `ComedorContext.test.tsx` | Hook |
+| RT-06 | `ComedorContext.test.tsx` | Hook |
+| RT-07 | `npx tsc --noEmit` | Herramienta |
+| RT-08 | `app.json` (manual) | Config |
+| RT-09 | `package-lock.json` (manual) | Config |
+| RT-10 | Grep para `DEFENSA` (manual) | Revisión |
+| RR-01 | `inicio.test.tsx` | Component |
+| RR-02 | `menu.test.tsx` | Component |
+| RR-03 | `categorias.test.tsx` | Component |
+| RR-04 | `buscar.test.tsx` | Component |
+| RR-05 | `carrito.test.tsx` | Component |
+| RR-06 | `carrito.test.tsx` | Component |
+| RR-07 | `confirmar.test.tsx` | Component |
+| RR-08 | `turno.test.tsx` | Component |
+| RR-09 | `login.test.tsx` | Component |
+| RR-10 | `cocina.test.tsx` | Component |
+| RR-11 | `cocina.test.tsx` | Component |
+| RR-12 | `ayuda.test.tsx` | Component |
+| RR-13 | `ayuda.test.tsx` | Component |
+| RR-14 | Manual | Manual |
+| RR-15 | `enrutamiento.test.tsx` | Component |
+| RR-16 | `enrutamiento.test.tsx` | Component |
+| RO-01 | `TituloConContadorDePila.test.tsx` | Component |
+| RO-02 | Manual | Manual |
+| RO-03 | Manual | Manual |
+| RO-04 | `turno.test.tsx` | Component |
 
 ---
 

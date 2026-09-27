@@ -1,56 +1,46 @@
-# Welcome to your Expo app 👋
+# Comedor IPF - Sistema de Pedidos y Turnos
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+¡Bienvenido al sistema de pedidos y turnos del Comedor IPF! Una aplicación móvil moderna desarrollada con React Native, Expo Router y TypeScript, diseñada para gestionar los pedidos de los empleados y el flujo de la cocina.
 
-## Get started
+## 📦 Funcionalidades Principales
 
-1. Install dependencies
+### Para el Usuario
+- **Exploración del Menú**: Visualiza los platos agrupados por categorías (Desayunos, Almuerzos, Bebidas, Postres).
+- **Búsqueda Avanzada**: Encuentra platos rápidamente por nombre o usando chips de categorías rápidas.
+- **Detalle de Plato**: Visualiza descripciones detalladas y precios de cada opción.
+- **Carrito Inteligente**: Añade platos, deshace errores al instante (pila de acciones) y agrega notas especiales para la cocina.
+- **Gestión de Turnos**: Confirmación de pedido con tiempo de espera estimado en tiempo real.
 
+### Para la Cocina
+- **Acceso Protegido**: Pestaña protegida por autenticación.
+- **Gestión de Pedidos en Tiempo Real**: Cola de pedidos pendientes, donde el personal puede "Atender al siguiente" en orden estricto de llegada.
+- **Historial de Atendidos**: Visualización de los pedidos ya completados.
+
+## 🛠️ Tecnologías y Estructuras de Datos
+
+- **React Native & Expo Router**: Navegación basada en el sistema de archivos (file-based routing) con layouts anidados (Tabs, Stack, Drawer).
+- **TypeScript Estricto**: 100% type-safe sin uso de `any` ni `@ts-ignore`.
+- **Estructuras Clásicas**:
+  - **Pila (Stack)**: Implementada para la función "Deshacer último" del carrito y para el registro de rutas recorridas.
+  - **Cola (Queue)**: Implementada optimizada a O(1) para la cola de preparación de la cocina.
+- **Estado Global Eficiente**: Gestión centralizada mediante Context API con snapshots (referencias mutables sincronizadas con React).
+
+## 🚀 Cómo ejecutar el proyecto
+
+1. Instalar dependencias:
    ```bash
    npm install
    ```
 
-2. Start the app
-
+2. Iniciar el entorno de desarrollo:
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. Ejecutar los tests unitarios:
+   ```bash
+   npm test
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 👩‍💻 Creado para
+Trabajo Práctico 2 - Instituto Politécnico Formosa
