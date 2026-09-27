@@ -241,7 +241,7 @@
 
 ## T7 — Buscador y Ayuda (catch-all)
 
-- **Estado:** `[~]` en curso
+- **Estado:** `[x]` terminada
 - **Objetivo:** Implementar el buscador con filtrado y la sección de ayuda con catch-all.
 - **Requisitos de la spec:** RR-05, RR-13, RR-14, RO-01 (uso en `/buscar`)
 - **Archivos a modificar (reemplazar STUB):**
@@ -261,13 +261,16 @@
   - [x] Tests pasan
   - [x] Suite completa: todo en verde
   - [x] `npx tsc --noEmit`: 0 errores
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificación:**
+  - `npx jest --no-cache`: 16 suites, 84 tests passed, 0 failed.
+  - `npx tsc --noEmit`: 0 errores.
+  - `npx expo lint`: 0 errores, 0 warnings (después de corrección).
 
 ---
 
 ## T8 — Carrito, Nota, Confirmar, Turno y /pedido (incluye desafíos 3 y 4)
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[~]` en curso
 - **Objetivo:** Implementar el flujo completo de pedido con hoja inferior y tiempo estimado.
 - **Requisitos de la spec:** RF-03, RF-04, RF-05, RF-06, RF-07, RR-06, RR-07, RR-08, RR-09, RR-15, RO-01 (uso en `/turno/[numero]` y `/carrito/nota`), RO-03, RO-04
 - **Archivos a modificar (reemplazar STUB):**
