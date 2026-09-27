@@ -210,7 +210,7 @@
 
 ## T6 — Inicio, Menú, Detalle de plato, Categorías y 404 real
 
-- **Estado:** `[~]` en curso
+- **Estado:** `[x]` terminada
 - **Objetivo:** Implementar las pantallas de exploración reemplazando los STUBs.
 - **Requisitos de la spec:** RF-01, RF-02, RF-03 (botón agregar en detalle), RR-01, RR-02, RR-03, RR-04, RR-16, RO-01 (uso en `/menu/[id]` y `/categorias/[categoria]`)
 - **Archivos a modificar (reemplazar STUB):**
@@ -232,13 +232,16 @@
   - [x] Tests pasan
   - [x] Suite completa: todo en verde
   - [x] `npx tsc --noEmit`: 0 errores
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificación:**
+  - `npx jest --no-cache`: 14 suites, 76 tests passed, 0 failed.
+  - `npx tsc --noEmit`: 0 errores.
+  - `npx expo lint`: 0 errores, 0 warnings (después de corrección).
 
 ---
 
 ## T7 — Buscador y Ayuda (catch-all)
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[~]` en curso
 - **Objetivo:** Implementar el buscador con filtrado y la sección de ayuda con catch-all.
 - **Requisitos de la spec:** RR-05, RR-13, RR-14, RO-01 (uso en `/buscar`)
 - **Archivos a modificar (reemplazar STUB):**
