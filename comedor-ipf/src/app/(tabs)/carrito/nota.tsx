@@ -1,0 +1,1 @@
+import { Text } from 'react-native'; export default function CarritoNota() { return <Text>STUB 8</Text>; }

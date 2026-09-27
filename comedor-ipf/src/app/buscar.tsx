@@ -1,0 +1,1 @@
+import { Text } from 'react-native'; export default function Buscar() { return <Text>STUB 7</Text>; }

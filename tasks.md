@@ -163,7 +163,7 @@
 
 ## T5 — Esqueleto de enrutamiento: layouts reales y pantallas provisorias
 
-- **Estado:** `[~]` en curso
+- **Estado:** `[x]` terminada
 - **Objetivo:** Crear todos los layouts con la configuración real y todas las rutas de la tabla como pantallas provisorias (`// STUB(Tarea N)`).
 - **Requisitos de la spec:** RR-01 a RR-16 (estructura), RT-07, RT-08, RT-10
 - **Archivos a crear:**
@@ -195,19 +195,22 @@
   - [x] Todos los layouts creados con la configuración real (Stack raíz, Tabs, Stacks anidados, Drawer)
   - [x] Todos los archivos de ruta existen con `// STUB(Tarea N)`
   - [x] `+not-found.tsx` y `pedido.tsx` completos (no son stubs)
-  - [x] Comentarios `// DEFENSA:` en todos los layouts
+  - [x] Comentarios `// DEFENSA:` en todos layouts
   - [x] `anchor` configurado en raíz y stacks anidados
   - [x] Guards con `Stack.Protected` para login y cocina
   - [x] Tests de enrutamiento pasan
   - [x] Suite completa: todo en verde
   - [x] `npx tsc --noEmit`: 0 errores
-- **Evidencia de verificación:** _(se completa al terminar)_
+- **Evidencia de verificación:**
+  - `npx jest --no-cache`: 10 suites, 70 tests passed, 0 failed.
+  - `npx tsc --noEmit`: 0 errores.
+  - `npx expo lint`: 0 errores (se corrigieron stubs).
 
 ---
 
 ## T6 — Inicio, Menú, Detalle de plato, Categorías y 404 real
 
-- **Estado:** `[ ]` pendiente
+- **Estado:** `[~]` en curso
 - **Objetivo:** Implementar las pantallas de exploración reemplazando los STUBs.
 - **Requisitos de la spec:** RF-01, RF-02, RF-03 (botón agregar en detalle), RR-01, RR-02, RR-03, RR-04, RR-16, RO-01 (uso en `/menu/[id]` y `/categorias/[categoria]`)
 - **Archivos a modificar (reemplazar STUB):**

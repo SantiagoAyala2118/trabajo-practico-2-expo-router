@@ -1,0 +1,1 @@
+import { Text } from 'react-native'; export default function AyudaIndex() { return <Text>STUB 7</Text>; }

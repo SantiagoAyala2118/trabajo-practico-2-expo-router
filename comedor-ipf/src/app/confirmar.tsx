@@ -1,0 +1,1 @@
+import { Text } from 'react-native'; export default function Confirmar() { return <Text>STUB 8</Text>; }

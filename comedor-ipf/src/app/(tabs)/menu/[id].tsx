@@ -1,0 +1,1 @@
+import { Text } from 'react-native'; export default function MenuDetalle() { return <Text>STUB 6</Text>; }

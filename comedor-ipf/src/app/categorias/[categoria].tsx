@@ -1,0 +1,1 @@
+import { Text } from 'react-native'; export default function CategoriaLista() { return <Text>STUB 6</Text>; }

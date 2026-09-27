@@ -1,0 +1,1 @@
+import { Text } from 'react-native'; export default function InicioTab() { return <Text>STUB 6</Text>; }

@@ -1,0 +1,1 @@
+import { Text } from 'react-native'; export default function CocinaAtendidos() { return <Text>STUB 9</Text>; }
